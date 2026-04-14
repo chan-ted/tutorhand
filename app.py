@@ -1,10 +1,15 @@
-from flask import Flask , request
+from flask import Flask , request , render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'tutorhand'
+    questions = [
+        {'id':1 , 'questionLink':'DSE2026P2Q18.jpg' , 'answerLink':'DSE2026P2Q18-ans.jpg'},
+        {'id':2 , 'questionLink':'DSE2026P2Q21.jpg' ,  'answerLink':'DSE2026P2Q21-ans.jpg'},
+        {'id':3 ,  'questionLink':'DSE2026P2Q25.jpg' ,  'answerLink':'DSE2026P2Q25-ans.jpg'} 
+     ]
+    return render_template('index.html',questions=questions)
 
 @app.route('/tutor/<id>')
 def tutor(id):

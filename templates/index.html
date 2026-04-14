@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tutorhand</title>
+</head>
+<body>
+    <h1>Welcome to the Tutorhand</h1>
+    <p>This page will list Practice Questions.</p>
+    {% for q in questions %}
+    <h3>ID:  {{q.id}}</h3>
+    <img src="/static/{{q.questionLink}}">
+    <img src="/static/{{q.answerLink}}">
+    {% endfor %}
+</body>
+</html>
