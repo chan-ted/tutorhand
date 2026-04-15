@@ -1,6 +1,7 @@
 import os
-from flask import Flask , request , render_template
+from flask import Flask , request , render_template ,send_from_directory, url_for
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -8,6 +9,9 @@ db_folder = os.path.join(os.getcwd(),"database")
 db_path = os.path.join(db_folder,"database.db")
 os.makedirs(db_folder,exist_ok=True)
 
+UPLOAD_FOLDER='uploads'
+app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER,exist_ok=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -119,6 +123,30 @@ def result():
     
     return render_template('result.html', practices=practices)
 
+@app.route('/upload',methods=['GET','POST'])
+def upload():
+    if request.method=='POST':
+        q_file=request.files['question_file']
+        a_file=request.files['answer_file']
+        q_filename=secure_filename(q_file.filename)
+        a_filename=secure_filename(a_file.filename)
+        q_file.save(os.path.join(app.config['UPLOAD_FOLDER'],q_filename))
+        a_file.save(os.path.join(app.config['UPLOAD_FOLDER'],a_filename))
+
+        new_practice=Practices(questionLink=q_filename,answerLink=a_filename)
+        selected_topic_ids = request.form.getlist('topics')
+        for tid in selected_topic_ids:
+            topic = Topics.query.get(int(tid))
+            new_practice.topics.append(topic)
+        db.session.add(new_practice)
+        db.session.commit()
+        return "uploaded!"        
+    allTopics = Topics.query.all()
+    return render_template('upload.html', all_topics=allTopics)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)

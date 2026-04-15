@@ -6,8 +6,8 @@
 
     {% for p in practices %}
     <h3>ID:  {{p.id}}</h3>
-    <img src="/static/{{p.questionLink}}">
-    <img src="/static/{{p.answerLink}}">
+    <img src="{{ url_for('uploaded_file', filename = p.questionLink)}}">
+    <img src="{{ url_for('uploaded_file', filename = p.answerLink)}}">
     {% endfor %}
 
     {% endblock %}

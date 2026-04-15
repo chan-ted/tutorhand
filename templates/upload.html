@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+    {% block content %}
+<form action="/upload" method="POST" enctype="multipart/form-data">
+    <label>Question Image:</label>
+    <input type="file" name="question_file" accept="image/*" required>
+    
+    <label>Answer Image:</label>
+    <input type="file" name="answer_file" accept="image/*" required>
+    
+    <label>Select Topics:</label>
+    {% for topic in all_topics %}
+        <input type="checkbox" name="topics" value="{{ topic.id }}"> {{ topic.name }}
+    {% endfor %}
+    
+    <button type="submit">Upload Practice</button>
+</form>
+
+    {% endblock %}
