@@ -6,10 +6,6 @@
 
     <h1>Welcome to the Tutorhand</h1>
     <p>This page will list Practice Questions.</p>
-    {% for q in questions %}
-    <h3>ID:  {{q.id}}</h3>
-    <img src="/static/{{q.questionLink}}">
-    <img src="/static/{{q.answerLink}}">
-    {% endfor %}
+    <a href="/search">search practice</a>
 
     {% endblock %}

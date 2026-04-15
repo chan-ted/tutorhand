@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+    {% block content %}
+
+    <h2>Search for topics</h2>
+    <p>Practice Questions will be listed</p>
+    <form action="/result" method="GET">
+        <label>
+            <input type="checkbox" name="topic" value="1"> Ratio
+        </label>
+        <label>
+            <input type="checkbox" name="topic" value="2"> Geometry
+        </label>
+        <label>
+            <input type="checkbox" name="topic" value="3"> Mensuration
+        </label>
+        <br>
+        <button type="submit">Search</button>
+    </form>
+    {% endblock %}
