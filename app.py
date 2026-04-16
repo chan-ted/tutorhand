@@ -140,13 +140,33 @@ def upload():
             new_practice.topics.append(topic)
         db.session.add(new_practice)
         db.session.commit()
-        return "uploaded!"        
+        return "uploaded! <a href='/upload'>back</a>"        
     allTopics = Topics.query.all()
     return render_template('upload.html', all_topics=allTopics)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
+
+
+
+@app.route('/delete')
+def delete():
+    practices = Practices.query.all()   
+    return render_template('delete.html', practices=practices)
+
+@app.route('/delete/<int:id>')
+def delete_practice(id):
+    practice_delete = Practices.query.get(id)
+    try:
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], practice.questionLink))
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], practice.answerLink))
+    except:
+        pass
+    db.session.delete(practice_delete)
+    db.session.commit()
+    return ("deleted!  <a href='/delete'></a>")
+    
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)
