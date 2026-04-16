@@ -1,6 +1,6 @@
 to do:
 - file name setting --> unique
-- delete display file
+- make a page for delete displayed file
 - check empty file upload
 - hosting
 - chinese ver Q and A
