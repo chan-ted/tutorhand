@@ -1,6 +1,8 @@
 to do:
-- file name setting --> unique 
+- file name setting --> unique
+- delete display file
 - check empty file upload
+- hosting
 - chinese ver Q and A
 - log in to upload
 - pdf
