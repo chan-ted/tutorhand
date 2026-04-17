@@ -98,7 +98,6 @@ def filter_practices(allowed_topic_ids):
 
 @app.route('/')
 def home():
-    print(f"Secret key is: {app.config['SECRET_KEY']}")
     return render_template('index.html')
 
 @app.route('/tutor/<id>')
