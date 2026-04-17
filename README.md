@@ -1,7 +1,8 @@
 to do:
-- make a page for delete displayed file
+- make a page for delete displayed file     checked
+- hosting                                   checked
+
 - check empty file upload
-- hosting
 - file name setting --> unique
 - chinese ver Q and A
 - log in to upload
