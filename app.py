@@ -15,6 +15,7 @@ os.makedirs(UPLOAD_FOLDER,exist_ok=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-for-local')
 
 
 practice_topic=db.Table('practice_topic',
