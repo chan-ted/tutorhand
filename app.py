@@ -155,8 +155,9 @@ def upload():
                 file_options={"content-type":a_file.content_type}
                 )
 
-            public_url_q = supabase.storage.from_("practices").get_public_url(q_filename).public_url
-            public_url_a = supabase.storage.from_("practices").get_public_url(a_filename).public_url
+            public_url_q = supabase.storage.from_("practices").get_public_url(q_filename)
+            public_url_a = supabase.storage.from_("practices").get_public_url(a_filename)
+            print(f"DEBUG: Question URL is {public_url_q}")
             new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
             selected_topic_ids = request.form.getlist('topics')
             for tid in selected_topic_ids:
