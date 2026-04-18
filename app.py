@@ -9,17 +9,17 @@ app = Flask(__name__)
 db_folder = os.path.join(os.getcwd(),"database")
 db_path = os.path.join(db_folder,"database.db")
 os.makedirs(db_folder,exist_ok=True)
-
+url=os.environ.get("SUPABASE_URL")
+key=os.environ.get("SUPABASE_KEY")
 UPLOAD_FOLDER='uploads'
+
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER,exist_ok=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:3711eiPi1=0@db.vxiigflacpyqidiupsdy.supabase.co:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = url
 # = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-for-local')
-url=os.environ.get("SUPABASE_URL")
-key=os.environ.get("SUPABASE_KEY")
 supabase = create_client(url, key)
 
 
