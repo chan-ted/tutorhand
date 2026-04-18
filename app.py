@@ -134,7 +134,7 @@ def result():
 def upload():
     if request.method=='POST':
         q_file=request.files.get('question_file')
-        a_file=request.files('answer_file')
+        a_file=request.files.get('answer_file')
         if not q_file or not a_file:
             return "Missing files!", 400
         q_filename=secure_filename(q_file.filename)
