@@ -47,9 +47,9 @@ def preload():
     with app.app_context():
         if Practices.query.first() is None:
             practices_all = [
-            Practices(id=1 , questionLink='DSE2026P2Q18.jpg' , answerLink='DSE2026P2Q18-ans.jpg'),
-            Practices(id=2 , questionLink='DSE2026P2Q21.jpg' ,  answerLink='DSE2026P2Q21-ans.jpg'),
-            Practices(id=3 ,  questionLink='DSE2026P2Q25.jpg' ,  answerLink='DSE2026P2Q25-ans.jpg') 
+            Practices(questionLink='DSE2026P2Q18.jpg' , answerLink='DSE2026P2Q18-ans.jpg'),
+            Practices(questionLink='DSE2026P2Q21.jpg' ,  answerLink='DSE2026P2Q21-ans.jpg'),
+            Practices(questionLink='DSE2026P2Q25.jpg' ,  answerLink='DSE2026P2Q25-ans.jpg') 
             ]
             db.session.bulk_save_objects(practices_all)
             db.session.commit()
