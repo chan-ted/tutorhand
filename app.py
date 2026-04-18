@@ -2,6 +2,7 @@ import os
 from flask import Flask , request , render_template ,send_from_directory, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from supabase import create_client
 
 app = Flask(__name__)
 
@@ -12,10 +13,12 @@ os.makedirs(db_folder,exist_ok=True)
 UPLOAD_FOLDER='uploads'
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER,exist_ok=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:3711eiPi1=0@db.vxiigflacpyqidiupsdy.supabase.co:5432/postgres'
+# = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-for-local')
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 practice_topic=db.Table('practice_topic',
@@ -131,10 +134,18 @@ def upload():
         a_file=request.files['answer_file']
         q_filename=secure_filename(q_file.filename)
         a_filename=secure_filename(a_file.filename)
-        q_file.save(os.path.join(app.config['UPLOAD_FOLDER'],q_filename))
-        a_file.save(os.path.join(app.config['UPLOAD_FOLDER'],a_filename))
+        # q_file.save(os.path.join(app.config['UPLOAD_FOLDER'],q_filename))
+        # a_file.save(os.path.join(app.config['UPLOAD_FOLDER'],a_filename))
 
-        new_practice=Practices(questionLink=q_filename,answerLink=a_filename)
+        with open(temp_path,'rb') as f:
+            supabase.storage.from_("practices").upload(
+                path=q_filename,
+                file=f,
+                file_options={"content-type":"image/jpeg"}
+            )
+        public_url_q = supabase.storage.from("practices").get_public_url(q_filename)
+        public_url_a  = supabase.storage.from("practices").get_public_url(a_filename)
+        new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
         selected_topic_ids = request.form.getlist('topics')
         for tid in selected_topic_ids:
             topic = Topics.query.get(int(tid))
