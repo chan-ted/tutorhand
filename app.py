@@ -142,6 +142,7 @@ def upload():
         # q_file.save(os.path.join(app.config['UPLOAD_FOLDER'],q_filename))
         # a_file.save(os.path.join(app.config['UPLOAD_FOLDER'],a_filename))
         try:
+            q_file.seek(0)
             supabase.storage.from_("practices").upload(
                 path=q_filename,
                 file=q_file.read() , 
@@ -154,8 +155,8 @@ def upload():
                 file_options={"content-type":a_file.content_type}
                 )
 
-            public_url_q = supabase.storage.from_("practices").get_public_url(q_filename)
-            public_url_a  = supabase.storage.from_("practices").get_public_url(a_filename)
+            public_url_q = supabase.storage.from_("practices").get_public_url(q_filename).public_url
+            public_url_a = supabase.storage.from_("practices").get_public_url(a_filename).public_url
             new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
             selected_topic_ids = request.form.getlist('topics')
             for tid in selected_topic_ids:
