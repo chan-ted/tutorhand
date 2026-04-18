@@ -6,8 +6,12 @@
 
     {% for p in practices %}
     <h3>ID:  {{p.id}}</h3>
-    <img src="{{ url_for('uploaded_file', filename = p.questionLink)}}">
-    <img src="{{ url_for('uploaded_file', filename = p.answerLink)}}">
+    <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding: 10px;">
+        <img src="{{ url_for('uploaded_file', filename = p.questionLink)}}">
+        <img src="{{ url_for('uploaded_file', filename = p.answerLink)}}">
+        <img src="{{ p.questionLink }}" alt="Question" style="max-width: 100%; height: auto;">
+        <img src="{{ p.answerLink }}" alt="Answer" style="max-width: 100%; height: auto;">
+    </div>
     {% endfor %}
 
     {% endblock %}
