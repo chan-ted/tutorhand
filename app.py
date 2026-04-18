@@ -133,35 +133,40 @@ def result():
 @app.route('/upload',methods=['GET','POST'])
 def upload():
     if request.method=='POST':
-        q_file=request.files['question_file']
-        a_file=request.files['answer_file']
+        q_file=request.files.get('question_file')
+        a_file=request.files('answer_file')
+        if not q_file or not a_file:
+            return "Missing files!", 400
         q_filename=secure_filename(q_file.filename)
         a_filename=secure_filename(a_file.filename)
         # q_file.save(os.path.join(app.config['UPLOAD_FOLDER'],q_filename))
         # a_file.save(os.path.join(app.config['UPLOAD_FOLDER'],a_filename))
-
-        supabase.storage.from_("practices").upload(
+        try:
+            supabase.storage.from_("practices").upload(
                 path=q_filename,
                 file=q_file.read() , 
                 file_options={"content-type":q_file.content_type}
-            )
-        a_file.seek(0)
-        supabase.storage.from_("practices").upload(
+                )
+            a_file.seek(0)
+            supabase.storage.from_("practices").upload(
                 path=a_filename,
                 file=a_file.read() , 
                 file_options={"content-type":a_file.content_type}
-            )
+                )
 
-        public_url_q = supabase.storage.from_("practices").get_public_url(q_filename)
-        public_url_a  = supabase.storage.from_("practices").get_public_url(a_filename)
-        new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
-        selected_topic_ids = request.form.getlist('topics')
-        for tid in selected_topic_ids:
-            topic = Topics.query.get(int(tid))
-            new_practice.topics.append(topic)
-        db.session.add(new_practice)
-        db.session.commit()
-        return "uploaded! <a href='/upload'>back</a>"        
+            public_url_q = supabase.storage.from_("practices").get_public_url(q_filename)
+            public_url_a  = supabase.storage.from_("practices").get_public_url(a_filename)
+            new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
+            selected_topic_ids = request.form.getlist('topics')
+            for tid in selected_topic_ids:
+                topic = Topics.query.get(int(tid))
+                new_practice.topics.append(topic)
+            db.session.add(new_practice)
+            db.session.commit()
+            return "uploaded! <a href='/upload'>back</a>"   
+        except Exception as e:
+            print(f"Upload failed:{e}")
+            return f"An error during upload: {e}" , 500     
     allTopics = Topics.query.all()
     return render_template('upload.html', all_topics=allTopics)
 
