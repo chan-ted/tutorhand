@@ -18,7 +18,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:3711eiPi1=0@db.vx
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-for-local')
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+url=os.environ.get("SUPABASE_URL")
+key=os.environ.get("SUPABASE_KEY")
+supabase = create_client(url, key)
 
 
 practice_topic=db.Table('practice_topic',
@@ -143,8 +145,8 @@ def upload():
                 file=f,
                 file_options={"content-type":"image/jpeg"}
             )
-        public_url_q = supabase.storage.from("practices").get_public_url(q_filename)
-        public_url_a  = supabase.storage.from("practices").get_public_url(a_filename)
+        public_url_q = supabase.storage.from_("practices").get_public_url(q_filename)
+        public_url_a  = supabase.storage.from_("practices").get_public_url(a_filename)
         new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
         selected_topic_ids = request.form.getlist('topics')
         for tid in selected_topic_ids:
