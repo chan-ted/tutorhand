@@ -9,13 +9,13 @@ app = Flask(__name__)
 db_folder = os.path.join(os.getcwd(),"database")
 db_path = os.path.join(db_folder,"database.db")
 os.makedirs(db_folder,exist_ok=True)
-url=os.environ.get("SUPABASE_URL")
+db_uri=os.environ.get("DATABASE_URL")
 key=os.environ.get("SUPABASE_KEY")
 UPLOAD_FOLDER='uploads'
 
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER,exist_ok=True)
-app.config['SQLALCHEMY_DATABASE_URI'] = url
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 # = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -139,12 +139,18 @@ def upload():
         # q_file.save(os.path.join(app.config['UPLOAD_FOLDER'],q_filename))
         # a_file.save(os.path.join(app.config['UPLOAD_FOLDER'],a_filename))
 
-        with open(temp_path,'rb') as f:
-            supabase.storage.from_("practices").upload(
+        supabase.storage.from_("practices").upload(
                 path=q_filename,
-                file=f,
-                file_options={"content-type":"image/jpeg"}
+                file=q_file.read() , 
+                file_options={"content-type":q_file.content_type}
             )
+        a_file.seek(0)
+        supabase.storage.from_("practices").upload(
+                path=a_filename,
+                file=a_file.read() , 
+                file_options={"content-type":a_file.content_type}
+            )
+
         public_url_q = supabase.storage.from_("practices").get_public_url(q_filename)
         public_url_a  = supabase.storage.from_("practices").get_public_url(a_filename)
         new_practice=Practices(questionLink=public_url_q,answerLink=public_url_a)
@@ -171,12 +177,12 @@ def delete():
 
 @app.route('/delete/<int:id>')
 def delete_practice(id):
-    practice_delete = Practices.query.get(id)
-    try:
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], practice.questionLink))
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], practice.answerLink))
-    except:
-        pass
+    practice_delete = Practices.query.get_or_404(id)
+    #try:
+    #    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], practice.questionLink))
+    #    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], practice.answerLink))
+    #except:
+    #    pass
     db.session.delete(practice_delete)
     db.session.commit()
     return ("deleted!  <a href='/delete'></a>")
