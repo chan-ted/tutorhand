@@ -10,6 +10,7 @@ db_folder = os.path.join(os.getcwd(),"database")
 db_path = os.path.join(db_folder,"database.db")
 os.makedirs(db_folder,exist_ok=True)
 db_uri=os.environ.get("DATABASE_URL")
+url = os.environ.get("SUPABASE_URL")
 key=os.environ.get("SUPABASE_KEY")
 UPLOAD_FOLDER='uploads'
 
