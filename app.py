@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from supabase import create_client
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
 
@@ -28,6 +30,13 @@ supabase = create_client(url, key)
 login_manager=LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+Limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limit = ["20 per days","4 per hour"],
+    storage_uri="memory://",
+)
 
 
 practice_topic=db.Table('practice_topic',
@@ -136,6 +145,7 @@ def search():
 
 
 @app.route('/result')
+@limiter.limit("2 per minute")
 def result():
     # .getlist() retrieves all selected values for the name "topic"
     selected_topic_ids = request.args.getlist('topic')
