@@ -31,7 +31,7 @@ login_manager=LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-Limiter = Limiter(
+limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits = ["20 per days","4 per hour"],
