@@ -6,7 +6,7 @@
 
     <h2>LOG IN</h2>
     <p>Practice Questions will be listed</p>
-    <form action="{{ url_for('login') }}" method="POST">
+    <form action="{{ request.full_path }}" method="POST">
         <label>
             <input type="text" name="username" placeholder="Username"> username
         </label>
