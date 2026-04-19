@@ -101,7 +101,7 @@ def preload():
 def create_tables():
     with app.app_context():
         db.create_all()
-        if not User.query.filtered_by(username='admin').first():
+        if not User.query.filter_by(username='admin').first():
             admin=User(username='admin',password = 'wordpass')
             db.session.add(admin)
             db.session.commit()
@@ -218,7 +218,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-    user=User.query.filtered_by(username = username).first()
+    user=User.query.filter_by(username = username).first()
     if user and user.password == password:
         login_user(user)
         return redirect(url_for('upload'))
