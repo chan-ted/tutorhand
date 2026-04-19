@@ -35,7 +35,7 @@ login_manager.login_view = 'login'
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits = ["20 per days","4 per hour"],
+    default_limits = ["200 per days","40 per hour"],
     storage_uri="memory://",
 )
 
@@ -147,7 +147,7 @@ def search():
 
 
 @app.route('/result')
-@limiter.limit("2 per minute")
+# @limiter.limit("2 per minute")
 def result():
     # .getlist() retrieves all selected values for the name "topic"
     selected_topic_ids = request.args.getlist('topic')
