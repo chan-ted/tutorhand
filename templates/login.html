@@ -6,13 +6,13 @@
 
     <h2>LOG IN</h2>
     <p>Practice Questions will be listed</p>
-    <form action="/result" method="GET">
+    <form action="{{ url_for('login') }}" method="POST">
         <label>
-            <input type="text" name="username" > username
+            <input type="text" name="username" placeholder="Username"> username
         </label>
         <label>
-            <input type="text" name="password" > password
+            <input type="password" name="password" placeholder="Password"> password
         </label>
-        <button type="submit">Submit</button>
+        <button type="submit">Login</button>
     </form>
     {% endblock %}
