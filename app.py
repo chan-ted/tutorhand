@@ -3,7 +3,7 @@ from flask import Flask , request , render_template ,send_from_directory, url_fo
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from supabase import create_client
-from flask-login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 
