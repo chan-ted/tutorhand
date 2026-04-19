@@ -197,11 +197,13 @@ def uploaded_file(filename):
 
 
 @app.route('/delete')
+@login_required
 def delete():
     practices = Practices.query.all()   
     return render_template('delete.html', practices=practices)
 
 @app.route('/delete/<int:id>')
+@login_required
 def delete_practice(id):
     practice_delete = Practices.query.get_or_404(id)
     #try:
@@ -221,7 +223,8 @@ def login():
         user=User.query.filter_by(username = username).first()
         if user and user.password == password:
             login_user(user)
-            return redirect(url_for('upload'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('upload'))
         else:
             return "invalid login"
     return render_template('login.html')
