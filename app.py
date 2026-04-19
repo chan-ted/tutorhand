@@ -2,6 +2,7 @@ import os
 from flask import Flask , request , render_template ,send_from_directory, url_for , redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_limiter import Limiter
@@ -15,7 +16,7 @@ os.makedirs(db_folder,exist_ok=True)
 db_uri=os.environ.get("DATABASE_URL")
 url = os.environ.get("SUPABASE_URL")
 key=os.environ.get("SUPABASE_KEY")
-admin_pw = os.environ.get("ADMIN_PASSWORD")
+admin_pw = generate_password_hash(os.environ.get("ADMIN_PASSWORD"),method='pbkdf2:sha256')
 UPLOAD_FOLDER='uploads'
 
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
@@ -232,7 +233,7 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         user=User.query.filter_by(username = username).first()
-        if user and user.password == password:
+        if user and check_password_hash(user.password , password):
             login_user(user)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('upload'))
