@@ -3,6 +3,7 @@ from flask import Flask , request , render_template ,send_from_directory, url_fo
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from supabase import create_client
+from flask-login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 
@@ -23,6 +24,10 @@ db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-for-local')
 supabase = create_client(url, key)
 
+login_manager=LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
 
 practice_topic=db.Table('practice_topic',
     db.Column('practice_id', db.Integer,db.ForeignKey('practices.id'),primary_key=True),
@@ -42,6 +47,14 @@ class Practices(db.Model):
     answerLink = db.Column(db.String(300),nullable=False)
     topics=db.relationship('Topics',secondary=practice_topic, back_populates='practices')
 
+class User(db.Model, UserMixin):
+    id=db.Column(db.Integer,primary_key=True)
+    username=db.Column(db.String(50),unique=True,nullable=False)
+    password=db.Column(db.String(100),nullable=False)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def preload():
     with app.app_context():
@@ -88,6 +101,10 @@ def preload():
 def create_tables():
     with app.app_context():
         db.create_all()
+        if not User.query.filtered_by(username='admin').first():
+            admin=User(username='admin',password = 'wordpass')
+            db.session.add(admin)
+            db.session.commit()
         preload()
         
 create_tables()
@@ -131,6 +148,7 @@ def result():
     return render_template('result.html', practices=practices)
 
 @app.route('/upload',methods=['GET','POST'])
+@login_required
 def upload():
     if request.method=='POST':
         q_file=request.files.get('question_file')
@@ -194,6 +212,25 @@ def delete_practice(id):
     db.session.delete(practice_delete)
     db.session.commit()
     return ("deleted!  <a href='/delete'></a>")
+
+@app.route('/login',methods=['GET','POST'])
+def login():
+    if request.method == 'POST'
+        username = request.form.get('username')
+        password = request.form.get('password')
+    user=User.query.filtered_by(username = username).first()
+    if user and user.password == password:
+        login_user(user)
+        return redirect(url_for('upload'))
+    else:
+        return "invalid login"
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return "logged out!"
     
 
 if __name__ == '__main__':
