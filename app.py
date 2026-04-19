@@ -105,7 +105,7 @@ def create_tables():
             admin=User(username='admin',password = 'wordpass')
             db.session.add(admin)
             db.session.commit()
-        preload()
+        #preload()
         
 create_tables()
 
