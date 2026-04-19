@@ -102,7 +102,7 @@ def create_tables():
     with app.app_context():
         db.create_all()
         if not User.query.filter_by(username='admin').first():
-            admin=User(username='admin',password = 'wordpass')
+            admin=User(username='admin',password = os.environ.get('ADMIN_PASSWORD'))
             db.session.add(admin)
             db.session.commit()
         #preload()
