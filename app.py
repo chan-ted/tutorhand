@@ -16,7 +16,7 @@ os.makedirs(db_folder,exist_ok=True)
 db_uri=os.environ.get("DATABASE_URL")
 url = os.environ.get("SUPABASE_URL")
 key=os.environ.get("SUPABASE_KEY")
-admin_pw = generate_password_hash(os.environ.get("ADMIN_PASSWORD"),method='pbkdf2:sha256')
+# admin_pw = generate_password_hash(os.environ.get("ADMIN_PASSWORD"),method='pbkdf2:sha256')
 UPLOAD_FOLDER='uploads'
 
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
@@ -113,10 +113,10 @@ def preload():
 def create_tables():
     with app.app_context():
         db.create_all()
-        if not User.query.filter_by(username='admin').first():
-            admin=User(username='admin',password = admin_pw)
-            db.session.add(admin)
-            db.session.commit()
+        #if not User.query.filter_by(username='admin').first():
+         #   admin=User(username='admin',password = admin_pw)
+         #   db.session.add(admin)
+         #   db.session.commit()
         #preload()
         
 create_tables()
