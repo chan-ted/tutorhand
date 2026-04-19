@@ -34,7 +34,7 @@ login_manager.login_view = 'login'
 Limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limit = ["20 per days","4 per hour"],
+    default_limits = ["20 per days","4 per hour"],
     storage_uri="memory://",
 )
 
