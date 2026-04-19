@@ -13,6 +13,7 @@ os.makedirs(db_folder,exist_ok=True)
 db_uri=os.environ.get("DATABASE_URL")
 url = os.environ.get("SUPABASE_URL")
 key=os.environ.get("SUPABASE_KEY")
+admin_pw = os.environ.get("ADMIN_PASSWORD")
 UPLOAD_FOLDER='uploads'
 
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
@@ -102,7 +103,7 @@ def create_tables():
     with app.app_context():
         db.create_all()
         if not User.query.filter_by(username='admin').first():
-            admin=User(username='admin',password = os.environ.get('ADMIN_PASSWORD'))
+            admin=User(username='admin',password = admin_pw)
             db.session.add(admin)
             db.session.commit()
         #preload()
